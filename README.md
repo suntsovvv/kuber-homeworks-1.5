@@ -7,15 +7,6 @@
 ------
 
 
-### Инструменты и дополнительные материалы, которые пригодятся для выполнения задания
-
-1. [Инструкция](https://microk8s.io/docs/getting-started) по установке MicroK8S.
-2. [Описание](https://kubernetes.io/docs/concepts/services-networking/service/) Service.
-3. [Описание](https://kubernetes.io/docs/concepts/services-networking/ingress/) Ingress.
-4. [Описание](https://github.com/wbitt/Network-MultiTool) Multitool.
-
-------
-
 ### Задание 1. Создать Deployment приложений backend и frontend
 
 Cоздал манифесты: 
@@ -236,9 +227,12 @@ C:\Users\suntsov.vadim>ping suntsovvv.ru
     Минимальное = 105мсек, Максимальное = 108 мсек, Среднее = 106 мсек
 ```
 Проверил доступ с помощью браузера или  с локального компьютера:
+![image](https://github.com/user-attachments/assets/3529cf24-40d6-459e-a01e-66dee64a7284)
+![image](https://github.com/user-attachments/assets/fc02e77d-e613-4b78-b79b-084ce54c3b45)
+
 
 ------
 
 ## Ссылка на манифесты:
-
+https://github.com/suntsovvv/kuber-homeworks-1.5
 
