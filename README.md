@@ -157,17 +157,88 @@ WBITT Network MultiTool (with NGINX) - backend-847c446948-pn6ps - 10.1.128.250 -
 
 ### Задание 2. Создать Ingress и обеспечить доступ к приложениям снаружи кластера
 
-1. Включить Ingress-controller в MicroK8S.
-2. Создать Ingress, обеспечивающий доступ снаружи по IP-адресу кластера MicroK8S так, чтобы при запросе только по адресу открывался _frontend_ а при добавлении /api - _backend_.
-3. Продемонстрировать доступ с помощью браузера или `curl` с локального компьютера.
-4. Предоставить манифесты и скриншоты или вывод команды п.2.
+
+Включил Ingress-controller в MicroK8S:
+```bash
+user@microk8s:~/kuber-homeworks-1.5$ microk8s enable ingress
+Infer repository core for addon ingress
+Enabling Ingress
+ingressclass.networking.k8s.io/public created
+ingressclass.networking.k8s.io/nginx created
+namespace/ingress created
+serviceaccount/nginx-ingress-microk8s-serviceaccount created
+clusterrole.rbac.authorization.k8s.io/nginx-ingress-microk8s-clusterrole created
+role.rbac.authorization.k8s.io/nginx-ingress-microk8s-role created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress-microk8s created
+rolebinding.rbac.authorization.k8s.io/nginx-ingress-microk8s created
+configmap/nginx-load-balancer-microk8s-conf created
+configmap/nginx-ingress-tcp-microk8s-conf created
+configmap/nginx-ingress-udp-microk8s-conf created
+daemonset.apps/nginx-ingress-microk8s-controller created
+Ingress is enabled
+user@microk8s:~/kuber-homeworks-1.5$ kubectl get ingressclass
+NAME     CONTROLLER             PARAMETERS   AGE
+nginx    k8s.io/ingress-nginx   <none>       9s
+public   k8s.io/ingress-nginx   <none>       9s
+```
+Создал манифест ingress.yaml:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: suntsovvv.ru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-svc
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-svc
+            port:
+              number: 8080
+```
+Применил:
+```bash
+user@microk8s:~/kuber-homeworks-1.5$ kubectl apply -f ingress.yaml 
+ingress.networking.k8s.io/my-ingress created
+user@microk8s:~/kuber-homeworks-1.5$ kubectl get ingress
+NAME         CLASS   HOSTS          ADDRESS   PORTS   AGE
+my-ingress   nginx   suntsovvv.ru             80      10s
+```
+На локальной машине добавил в файл "hosts" запись _51.250.111.155     suntsovvv.ru _:
+
+```cmd
+C:\Users\suntsov.vadim>ping suntsovvv.ru
+
+Обмен пакетами с suntsovvv.ru [51.250.111.155] с 32 байтами данных:
+Ответ от 51.250.111.155: число байт=32 время=105мс TTL=51
+Ответ от 51.250.111.155: число байт=32 время=106мс TTL=51
+Ответ от 51.250.111.155: число байт=32 время=108мс TTL=51
+Ответ от 51.250.111.155: число байт=32 время=105мс TTL=51
+
+Статистика Ping для 51.250.111.155:
+    Пакетов: отправлено = 4, получено = 4, потеряно = 0
+    (0% потерь)
+Приблизительное время приема-передачи в мс:
+    Минимальное = 105мсек, Максимальное = 108 мсек, Среднее = 106 мсек
+```
+Проверил доступ с помощью браузера или  с локального компьютера:
 
 ------
 
-### Правила приема работы
+## Ссылка на манифесты:
 
-1. Домашняя работа оформляется в своем Git-репозитории в файле README.md. Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
-2. Файл README.md должен содержать скриншоты вывода необходимых команд `kubectl` и скриншоты результатов.
-3. Репозиторий должен содержать тексты манифестов или ссылки на них в файле README.md.
 
-------
